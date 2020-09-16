@@ -1,6 +1,7 @@
 import sys, os, time
 import argparse
 import tempfile,shutil
+import pdb
 
 
 
@@ -159,8 +160,13 @@ if __name__ == '__main__':
     
   #Cluster reads
   print( "[Cluster and identify integration points]: %f" % (time.time()-start_time))
-  os.system("python %s/scripts/merge_viral_reads.py --unknown %s.unknown.bam --trans %s.trans.bam --reduced tmp/temp/reduced.csv --map tmp/temp/unmapped.map --output %s.fixed.trans.bam" % (vifi_dir, options.prefix, options.prefix, options.prefix))
-  os.system("samtools sort -m 2G -@ %d %s.fixed.trans.bam > %s.fixed.trans.cs.bam" % (options.cpus, options.prefix, options.prefix))
+  # the next line fails if options.disable_hmms is False, because tmp/temp/reduced.csv does not exist
+  if options.disable_hmms is False:
+  	os.system("python %s/scripts/merge_viral_reads.py --unknown %s.unknown.bam --trans %s.trans.bam --reduced tmp/temp/reduced.csv --map tmp/temp/unmapped.map --output %s.fixed.trans.bam" % (vifi_dir, options.prefix, options.prefix, options.prefix))
+  	os.system("samtools sort -m 2G -@ %d %s.fixed.trans.bam > %s.fixed.trans.cs.bam" % (options.cpus, options.prefix, options.prefix))
+  else: 	
+  	os.system("samtools sort -m 2G -@ %d %s.trans.bam > %s.fixed.trans.cs.bam" % (options.cpus, options.prefix, options.prefix))
+  	
   os.system("samtools index %s.fixed.trans.cs.bam" % options.prefix)  
   os.system("samtools sort -m 2G -@ %d %s.viral.bam > %s.viral.cs.bam" % (options.cpus, options.prefix, options.prefix))  
   os.system("samtools index %s.viral.cs.bam" % options.prefix)
