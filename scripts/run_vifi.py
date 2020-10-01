@@ -70,8 +70,8 @@ def parse_args(reference_dir):
     else:
       chromosome_dir = os.path.dirname(os.path.realpath(options.chromosome_list))
       chromosome = os.path.basename(options.chromosome_list) 
-      input_string+= "-v %s:%s -e CHROMOSOME=%s " % (chromosome_dir, '/home/chromosomes/', os.path.basename(options.chromosome))
-      vifi_string+= "-C /home/chromosomes/%s " % (os.path.basename(options.chromosome))                
+      input_string+= "-v %s:%s -e CHROMOSOME=%s " % (chromosome_dir, '/home/chromosomes/', os.path.basename(chromosome))
+      vifi_string+= "-C /home/chromosomes/%s " % (os.path.basename(chromosome))                
   if options.hmm_list is not None:
     if not os.path.exists(options.hmm_list):
       parser.error('Unable to find %s' % (options.hmm_list))
@@ -84,11 +84,11 @@ def parse_args(reference_dir):
         vifi_string+= "-l /home/hmm_list/%s " % (os.path.basename(temp_list.name))      
         options.temp_list = temp_list.name          
   if options.reference.find('<VIRUS>') == -1:
-    if not os.path.exists(options.default_reference):
-      parser.error('Unable to find %s' (options.default_reference))
+    if not os.path.exists(options.reference):
+      parser.error('Unable to find %s' (options.reference))
     else:
       #Fix default reference
-      vifi_string+= "-reference %s " % (options.default_reference)                   
+      vifi_string+= "-reference %s " % (options.reference)                   
   input_string+= "-v %s:/home/repo/data " % os.environ['REFERENCE_REPO']
   input_string+= "-v %s:/home/output/  -e REFERENCE_REPO=/home/repo/data "  % (os.path.realpath(options.output_dir))
   input_string+= "-v %s:/home/data_repo/ " % os.environ['AA_DATA_REPO']
